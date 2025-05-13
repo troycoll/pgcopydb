@@ -6,7 +6,7 @@ FROM --platform=${TARGETPLATFORM} debian:11-slim AS build
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG PGVERSION=16
+ARG PGVERSION=17
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
   && apt install -qqy --no-install-recommends \
