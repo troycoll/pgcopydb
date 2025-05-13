@@ -91,7 +91,7 @@ FROM --platform=${TARGETPLATFORM} debian:11-slim AS run
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG PGVERSION=16
+ARG PGVERSION=17
 
 # used to configure Github Packages
 LABEL org.opencontainers.image.source=https://github.com/dimitri/pgcopydb
