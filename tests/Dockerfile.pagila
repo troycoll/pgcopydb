@@ -17,6 +17,7 @@ RUN apt-get update \
     make \
     openssl \
     postgresql-client-common \
+    postgresql-client-${PGVERSION} \
     psmisc \
     strace \
     sudo \
@@ -34,6 +35,9 @@ RUN apt-get update \
     postgresql-${PGVERSION} \
   && rm -rf /var/lib/apt/lists/*
 
+# Verify PostgreSQL version
+RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL version mismatch" && exit 1)
+
 WORKDIR /usr/src/
 RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
@@ -47,7 +51,6 @@ RUN set -eux; \
 RUN getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN echo $LD_LIBRARY_PATH
 
 COPY --from=pgcopydb /usr/local/bin/sqlite3 /usr/local/bin
 COPY --from=pgcopydb /usr/local/bin/pgcopydb /usr/local/bin

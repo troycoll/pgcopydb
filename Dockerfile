@@ -47,10 +47,14 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     make \
     openssl \
     postgresql-server-dev-${PGVERSION} \
+    postgresql-client-${PGVERSION} \
     psutils \
     tmux \
     watch \
     zlib1g-dev
+
+# Verify PostgreSQL development version
+RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL development version mismatch" && exit 1)
 
 WORKDIR /usr/src/pgcopydb
 
@@ -123,10 +127,12 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Verify PostgreSQL client version
+RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL client version mismatch" && exit 1)
+
 RUN  getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN echo $LD_LIBRARY_PATH
 
 COPY --from=build --chmod=755 /usr/lib/postgresql/${PGVERSION}/bin/pgcopydb /usr/local/bin
 COPY --from=build /usr/local/bin/sqlite3 /usr/local/bin/sqlite3
