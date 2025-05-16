@@ -47,6 +47,7 @@ RUN set -eux; \
 RUN getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN echo $LD_LIBRARY_PATH
 
 COPY --from=pgcopydb /usr/local/bin/sqlite3 /usr/local/bin
 COPY --from=pgcopydb /usr/local/bin/pgcopydb /usr/local/bin

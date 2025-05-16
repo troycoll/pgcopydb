@@ -126,6 +126,7 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
 RUN  getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN echo $LD_LIBRARY_PATH
 
 COPY --from=build --chmod=755 /usr/lib/postgresql/${PGVERSION}/bin/pgcopydb /usr/local/bin
 COPY --from=build /usr/local/bin/sqlite3 /usr/local/bin/sqlite3
