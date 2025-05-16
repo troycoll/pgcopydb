@@ -39,7 +39,10 @@ RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
 #RUN adduser --disabled-password --gecos '' --home /var/lib/postgres docker
 #RUN adduser docker sudo
-RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g 999 -G sudo docker
+RUN set -eux; \
+	groupadd -r postgres --gid=999; \
+  useradd -r -g postgres --uid=999 --home-dir=/var/lib/postgresql --shell=/bin/bash postgres; \ 
+RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=pgcopydb /usr/local/bin/sqlite3 /usr/local/bin
