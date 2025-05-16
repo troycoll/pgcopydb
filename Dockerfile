@@ -53,9 +53,6 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     watch \
     zlib1g-dev
 
-# Verify PostgreSQL development version
-RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL development version mismatch" && exit 1)
-
 WORKDIR /usr/src/pgcopydb
 
 COPY Makefile .

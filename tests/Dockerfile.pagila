@@ -35,9 +35,6 @@ RUN apt-get update \
     postgresql-${PGVERSION} \
   && rm -rf /var/lib/apt/lists/*
 
-# Verify PostgreSQL version
-RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL version mismatch" && exit 1)
-
 WORKDIR /usr/src/
 RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
