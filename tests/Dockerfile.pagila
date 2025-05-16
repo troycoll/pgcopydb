@@ -2,8 +2,6 @@ ARG PGVERSION=17
 
 FROM debian:bullseye-slim
 
-ARG PGVERSION
-
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
