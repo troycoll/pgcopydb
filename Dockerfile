@@ -9,7 +9,7 @@ ARG TARGETARCH
 ARG PGVERSION=17
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
 	curl \
 	ca-certificates \
 	gnupg
@@ -18,7 +18,7 @@ RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
     libncurses-dev \
     libxml2-dev \
     sudo \
@@ -97,7 +97,7 @@ ARG PGVERSION=17
 LABEL org.opencontainers.image.source=https://github.com/dimitri/pgcopydb
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
 	curl \
 	ca-certificates \
 	gnupg
@@ -106,7 +106,7 @@ RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-suggests --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-suggests --no-install-recommends \
     sudo \
     passwd \
     ca-certificates \
