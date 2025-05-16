@@ -39,6 +39,7 @@ RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
 #RUN adduser --disabled-password --gecos '' --home /var/lib/postgres docker
 #RUN adduser docker sudo
+RUN  getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 

@@ -123,7 +123,7 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "getent group | cut -d: -f1,3"
+RUN  getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
