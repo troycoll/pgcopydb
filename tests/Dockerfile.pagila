@@ -1,4 +1,4 @@
-ARG PGVERSION=16
+ARG PGVERSION=17
 
 FROM debian:bullseye-slim
 
