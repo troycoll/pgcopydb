@@ -123,10 +123,8 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN set -eux; \
-	groupadd -r postgres --gid=999; \
-  useradd -r -g postgres --uid=999 --home-dir=/var/lib/postgresql --shell=/bin/bash postgres; \ 
-RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
+RUN getent group | cut -d: -f1,3
+RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=build --chmod=755 /usr/lib/postgresql/${PGVERSION}/bin/pgcopydb /usr/local/bin
