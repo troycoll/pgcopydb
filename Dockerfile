@@ -123,7 +123,7 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
+RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g 999 -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=build --chmod=755 /usr/lib/postgresql/${PGVERSION}/bin/pgcopydb /usr/local/bin
