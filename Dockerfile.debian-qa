@@ -1,5 +1,7 @@
 FROM debian:sid
 
+ARG PGVERSION=17
+
 ENV TAR v0.17.tar.gz
 ENV ORIG pgcopydb_0.17.orig.tar.gz
 ENV WORKDIR /usr/src/pgcopydb-0.17
@@ -26,6 +28,7 @@ RUN apt-get update \
         libpq-dev \
         libzstd-dev \
         postgresql-server-dev-all \
+        postgresql-client-${PGVERSION} \
         postgresql-common \
         postgresql \
         python3-sphinx \
