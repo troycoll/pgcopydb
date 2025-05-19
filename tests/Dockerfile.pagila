@@ -3,7 +3,7 @@ ARG PGVERSION="17"
 FROM debian:trixie-slim
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
+  && apt-get install --fix-missing -y --no-install-recommends \
     ca-certificates \
     curl \
     gdb \
@@ -16,8 +16,10 @@ RUN apt-get update \
     lsof \
     make \
     openssl \
+    postgresql-17-wal2json \
     postgresql-client-common \
     postgresql-client-${PGVERSION} \
+    postgresql-common \
     postgresql-server-dev-all \
     psmisc \
     strace \
