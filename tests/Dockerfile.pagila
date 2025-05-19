@@ -16,7 +16,6 @@ RUN apt-get update \
     lsof \
     make \
     openssl \
-    postgresql-${PGVERSION}-wal2json \
     postgresql-client-common \
     postgresql-client-${PGVERSION} \
     postgresql-common \
