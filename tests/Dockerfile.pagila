@@ -1,6 +1,6 @@
 ARG PGVERSION="17"
 
-FROM debian:12-slim
+FROM debian:trixie-slim
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -26,8 +26,10 @@ RUN apt-get update \
     watch \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
+RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc > /tmp/ACCC4CF8.asc && \
+    gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg /tmp/ACCC4CF8.asc
+
+RUN echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 # bypass initdb of a "main" cluster
 RUN echo 'create_main_cluster = false' | sudo tee -a /etc/postgresql-common/createcluster.conf
