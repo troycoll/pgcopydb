@@ -1,4 +1,4 @@
-ARG PGVERSION=17
+ARG PGVERSION="17"
 
 FROM debian:12-slim
 
@@ -18,6 +18,7 @@ RUN apt-get update \
     openssl \
     postgresql-client-common \
     postgresql-client-${PGVERSION} \
+    postgresql-server-dev-all \
     psmisc \
     strace \
     sudo \
@@ -40,12 +41,6 @@ RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
 #RUN adduser --disabled-password --gecos '' --home /var/lib/postgres docker
 #RUN adduser docker sudo
-RUN getent group | cut -d: -f1,3
-RUN set -eux; \
-	groupadd -r postgres --gid=999; \
-# https://salsa.debian.org/postgresql/postgresql-common/blob/997d842ee744687d99a2b2d95c1083a2615c79e8/debian/postgresql-common.postinst#L32-35
-	useradd -r -g postgres --uid=999 --home-dir=/var/lib/postgresql --shell=/bin/bash postgres; \
-RUN getent group | cut -d: -f1,3
 RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
