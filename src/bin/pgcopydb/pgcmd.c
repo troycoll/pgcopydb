@@ -401,9 +401,8 @@ pg_dump_db(PostgresPaths *pgPaths,
 	 * Using --schema-only instead is not an option because it does not include
 	 * the necessary large object metadata.
 	 */
-	args[argsIndex++] = "--section=pre-data";
-	args[argsIndex++] = "--section=post-data";
-  args[argsIndex++] = "--large-objects";
+	/* args[argsIndex++] = "--section=pre-data"; */
+	/* args[argsIndex++] = "--section=post-data"; */
 
 	/* apply [include-only-schema] filtering */
 	for (int i = 0; i < filters->includeOnlySchemaList.count; i++)
@@ -1355,6 +1354,7 @@ struct ArchiveItemDescMapping pgRestoreDescriptionArray[] = {
 	INSERT_MAPPING(ARCHIVE_TAG_INDEX, "INDEX"),
 	INSERT_MAPPING(ARCHIVE_TAG_LANGUAGE, "LANGUAGE"),
 	INSERT_MAPPING(ARCHIVE_TAG_LARGE_OBJECT, "LARGE OBJECT"),
+
 	/*
 	 * MATERIALIZED VIEW DATA should come before MATERIALIZED VIEW, otherwise
 	 * the strncmp will match the first part of the string and misidentify the
@@ -1394,7 +1394,7 @@ struct ArchiveItemDescMapping pgRestoreDescriptionArray[] = {
 	INSERT_MAPPING(ARCHIVE_TAG_TYPE, "TYPE"),
 	INSERT_MAPPING(ARCHIVE_TAG_USER_MAPPING, "USER MAPPING"),
 	INSERT_MAPPING(ARCHIVE_TAG_VIEW, "VIEW"),
-  INSERT_MAPPING(ARCHIVE_TAG_BLOB_METADATA, "BLOB METADATA"),
+	INSERT_MAPPING(ARCHIVE_TAG_BLOB_METADATA, "BLOB METADATA"),
 	{ ARCHIVE_TAG_UNKNOWN, 0, "" }
 };
 
