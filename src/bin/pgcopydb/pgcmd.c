@@ -403,6 +403,7 @@ pg_dump_db(PostgresPaths *pgPaths,
 	 */
 	args[argsIndex++] = "--section=pre-data";
 	args[argsIndex++] = "--section=post-data";
+  args[argsIndex++] = "--large-objects";
 
 	/* apply [include-only-schema] filtering */
 	for (int i = 0; i < filters->includeOnlySchemaList.count; i++)
