@@ -43,7 +43,9 @@ typedef enum
 	ARCHIVE_TAG_AGGREGATE,
 	ARCHIVE_TAG_ATTRDEF,
 	ARCHIVE_TAG_BLOB_DATA,
+	ARCHIVE_TAG_BLOB_METADATA,
 	ARCHIVE_TAG_BLOB,
+  ARCHIVE_TAG_BLOBS,
 	ARCHIVE_TAG_CAST,
 	ARCHIVE_TAG_CHECK_CONSTRAINT,
 	ARCHIVE_TAG_COLLATION,
@@ -129,6 +131,7 @@ typedef enum
 	ARCHIVE_TOKEN_OID,
 	ARCHIVE_TOKEN_DESC,
 	ARCHIVE_TOKEN_DASH,
+	ARCHIVE_TOKEN_DOT,
 	ARCHIVE_TOKEN_EOL
 } ArchiveTokenType;
 
@@ -202,6 +205,7 @@ typedef enum
 typedef enum
 {
 	PG_RESTORE_SECTION_PRE_DATA = 0,
+	PG_RESTORE_SECTION_DATA,
 	PG_RESTORE_SECTION_POST_DATA,
 } PostgresRestoreSection;
 
@@ -221,6 +225,11 @@ postgresRestoreSectionToString(PostgresRestoreSection section)
 		case PG_RESTORE_SECTION_POST_DATA:
 		{
 			return "post-data";
+		}
+
+		case PG_RESTORE_SECTION_DATA:
+		{
+			return "data";
 		}
 
 		default:

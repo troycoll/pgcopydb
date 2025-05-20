@@ -6,10 +6,10 @@ FROM --platform=${TARGETPLATFORM} debian:11-slim AS build
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG PGVERSION=16
+ARG PGVERSION=17
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
 	curl \
 	ca-certificates \
 	gnupg
@@ -18,7 +18,7 @@ RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
     libncurses-dev \
     libxml2-dev \
     sudo \
@@ -47,6 +47,7 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     make \
     openssl \
     postgresql-server-dev-${PGVERSION} \
+    postgresql-client-${PGVERSION} \
     psutils \
     tmux \
     watch \
@@ -91,13 +92,13 @@ FROM --platform=${TARGETPLATFORM} debian:11-slim AS run
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG PGVERSION=16
+ARG PGVERSION=17
 
 # used to configure Github Packages
 LABEL org.opencontainers.image.source=https://github.com/dimitri/pgcopydb
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-recommends \
 	curl \
 	ca-certificates \
 	gnupg
@@ -106,7 +107,7 @@ RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
-  && apt install -qqy --no-install-suggests --no-install-recommends \
+  && apt install --fix-missing -qqy --no-install-suggests --no-install-recommends \
     sudo \
     passwd \
     ca-certificates \
@@ -123,7 +124,11 @@ RUN dpkg --add-architecture ${TARGETARCH:-arm64} && apt update \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
+# Verify PostgreSQL client version
+RUN pg_config --version | grep -q "^PostgreSQL ${PGVERSION}" || (echo "PostgreSQL client version mismatch" && exit 1)
+
+RUN  getent group | cut -d: -f1,3
+RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=build --chmod=755 /usr/lib/postgresql/${PGVERSION}/bin/pgcopydb /usr/local/bin

@@ -1,5 +1,6 @@
 FROM debian:sid
 
+ARG PGVERSION=17
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
         build-essential \
@@ -21,6 +22,7 @@ RUN apt-get update \
         libzstd-dev \
         postgresql-server-dev-all \
         postgresql-common \
+        postgresql-client-${PGVERSION} \
         postgresql \
         python3-sphinx \
         lintian \

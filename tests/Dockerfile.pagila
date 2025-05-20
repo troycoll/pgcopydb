@@ -1,11 +1,9 @@
-ARG PGVERSION=16
+ARG PGVERSION="17"
 
-FROM debian:bullseye-slim
-
-ARG PGVERSION
+FROM debian:trixie-slim
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
+  && apt-get install --fix-missing -y --no-install-recommends \
     ca-certificates \
     curl \
     gdb \
@@ -19,6 +17,9 @@ RUN apt-get update \
     make \
     openssl \
     postgresql-client-common \
+    postgresql-client-${PGVERSION} \
+    postgresql-common \
+    postgresql-server-dev-all \
     psmisc \
     strace \
     sudo \
@@ -26,8 +27,10 @@ RUN apt-get update \
     watch \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
+RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc > /tmp/ACCC4CF8.asc && \
+    gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg /tmp/ACCC4CF8.asc
+
+RUN echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt trixie-pgdg main ${PGVERSION}" > /etc/apt/sources.list.d/pgdg.list
 
 # bypass initdb of a "main" cluster
 RUN echo 'create_main_cluster = false' | sudo tee -a /etc/postgresql-common/createcluster.conf
@@ -41,7 +44,7 @@ RUN git clone --depth 1 https://github.com/devrimgunduz/pagila.git
 
 #RUN adduser --disabled-password --gecos '' --home /var/lib/postgres docker
 #RUN adduser docker sudo
-RUN useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
+RUN sudo useradd -rm -d /var/lib/postgres -s /bin/bash -g postgres -G sudo docker
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 COPY --from=pgcopydb /usr/local/bin/sqlite3 /usr/local/bin

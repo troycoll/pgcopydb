@@ -401,8 +401,8 @@ pg_dump_db(PostgresPaths *pgPaths,
 	 * Using --schema-only instead is not an option because it does not include
 	 * the necessary large object metadata.
 	 */
-	args[argsIndex++] = "--section=pre-data";
-	args[argsIndex++] = "--section=post-data";
+	/* args[argsIndex++] = "--section=pre-data"; */
+	/* args[argsIndex++] = "--section=post-data"; */
 
 	/* apply [include-only-schema] filtering */
 	for (int i = 0; i < filters->includeOnlySchemaList.count; i++)
@@ -1332,6 +1332,7 @@ struct ArchiveItemDescMapping pgRestoreDescriptionArray[] = {
 	INSERT_MAPPING(ARCHIVE_TAG_ATTRDEF, "ATTRDEF"),
 	INSERT_MAPPING(ARCHIVE_TAG_BLOB_DATA, "BLOB DATA"),
 	INSERT_MAPPING(ARCHIVE_TAG_BLOB, "BLOB"),
+	INSERT_MAPPING(ARCHIVE_TAG_BLOBS, "BLOBS"),
 	INSERT_MAPPING(ARCHIVE_TAG_CAST, "CAST"),
 	INSERT_MAPPING(ARCHIVE_TAG_CHECK_CONSTRAINT, "CHECK CONSTRAINT"),
 	INSERT_MAPPING(ARCHIVE_TAG_COLLATION, "COLLATION"),
@@ -1394,6 +1395,7 @@ struct ArchiveItemDescMapping pgRestoreDescriptionArray[] = {
 	INSERT_MAPPING(ARCHIVE_TAG_TYPE, "TYPE"),
 	INSERT_MAPPING(ARCHIVE_TAG_USER_MAPPING, "USER MAPPING"),
 	INSERT_MAPPING(ARCHIVE_TAG_VIEW, "VIEW"),
+	INSERT_MAPPING(ARCHIVE_TAG_BLOB_METADATA, "BLOB METADATA"),
 	{ ARCHIVE_TAG_UNKNOWN, 0, "" }
 };
 
@@ -1592,6 +1594,15 @@ tokenize_archive_list_entry(ArchiveToken *token)
 
 		return true;
 	}
+
+  if (*line == '.')
+  {
+    token->type = ARCHIVE_TOKEN_DOT;
+    token->ptr = (char *) line + 1;
+    log_warn("Found dot in pg_restore --list output: %s", line);
+
+    return true;
+  }
 
 	if (*line == ' ')
 	{
