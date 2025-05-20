@@ -3391,32 +3391,29 @@ pg_copy_large_object(PGSQL *src,
 	 *    large object metadata and we only have to take care of the
 	 *    contents of the large objects.
 	 */
-	if (dropIfExists)
+	if (!lo_unlink(dst->connection, blobOid))
 	{
-		if (!lo_unlink(dst->connection, blobOid))
-		{
-			/* ignore errors, the object might not exists */
-			log_debug("Failed to delete large object %u", blobOid);
-		}
+		/* ignore errors, the object might not exists */
+		log_debug("Failed to delete large object %u", blobOid);
+	}
 
-		Oid dstBlobOid = lo_create(dst->connection, blobOid);
+	Oid dstBlobOid = lo_create(dst->connection, blobOid);
 
-		if (dstBlobOid != blobOid)
-		{
-			char context[BUFSIZE] = { 0 };
+	if (dstBlobOid != blobOid)
+	{
+		char context[BUFSIZE] = { 0 };
 
-			sformat(context, sizeof(context),
-					"Failed to create large object %u", blobOid);
+		sformat(context, sizeof(context),
+		"Failed to create large object %u", blobOid);
 
-			(void) pgcopy_log_error(dst, NULL, context);
+		(void) pgcopy_log_error(dst, NULL, context);
 
-			lo_close(src->connection, srcfd);
+		lo_close(src->connection, srcfd);
 
-			pgsql_finish(src);
-			pgsql_finish(dst);
+		pgsql_finish(src);
+		pgsql_finish(dst);
 
-			return false;
-		}
+		return false;
 	}
 
 	/*
