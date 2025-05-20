@@ -1599,6 +1599,7 @@ tokenize_archive_list_entry(ArchiveToken *token)
   {
     token->type = ARCHIVE_TOKEN_DOT;
     token->ptr = (char *) line + 1;
+    log_warn("Found dot in pg_restore --list output: %s", line);
 
     return true;
   }
