@@ -131,6 +131,7 @@ typedef enum
 	ARCHIVE_TOKEN_OID,
 	ARCHIVE_TOKEN_DESC,
 	ARCHIVE_TOKEN_DASH,
+	ARCHIVE_TOKEN_DOT,
 	ARCHIVE_TOKEN_EOL
 } ArchiveTokenType;
 
@@ -204,6 +205,7 @@ typedef enum
 typedef enum
 {
 	PG_RESTORE_SECTION_PRE_DATA = 0,
+	PG_RESTORE_SECTION_DATA,
 	PG_RESTORE_SECTION_POST_DATA,
 } PostgresRestoreSection;
 
@@ -223,6 +225,11 @@ postgresRestoreSectionToString(PostgresRestoreSection section)
 		case PG_RESTORE_SECTION_POST_DATA:
 		{
 			return "post-data";
+		}
+
+		case PG_RESTORE_SECTION_DATA:
+		{
+			return "data";
 		}
 
 		default:

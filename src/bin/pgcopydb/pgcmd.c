@@ -1595,6 +1595,14 @@ tokenize_archive_list_entry(ArchiveToken *token)
 		return true;
 	}
 
+  if (*line == '.')
+  {
+    token->type = ARCHIVE_TOKEN_DOT;
+    token->ptr = (char *) line + 1;
+
+    return true;
+  }
+
 	if (*line == ' ')
 	{
 		char *ptr = line;
